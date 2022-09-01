@@ -1,0 +1,31 @@
+```{r}
+
+library(ggplot2)
+library(mosaic)
+choroby <- read.table("D:/Studia Materiały/Studia_4_semestr/Modelowanie_statystyczne/Cw7/cw7/choroby_serca.txt",header = TRUE)
+
+
+cor(choroby$rower,choroby$palenie,method = "pearson")
+
+
+ggplot() +
+aes(choroby$choroby) +
+geom_histogram(fill = "lightgreen", color = "black")
+
+
+
+
+```
+
+
+```{r}
+
+
+ggplot() + geom_point(aes(x=choroby$rower + choroby$palenie, y= choroby$choroby)) 
+
+
+
+
+model <- lm(choroby$choroby ~ choroby$rower + choroby$palenie)
+summary(model)
+```

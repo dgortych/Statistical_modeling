@@ -1,0 +1,92 @@
+
+```{r}
+
+library(caTools)
+#Wczytanie danych
+
+dane <- readxl::read_xlsx("D:/Studia Materiały/Studia_4_semestr/Modelowanie_statystyczne/Kolokwium/kolokwium_gr3.xlsx")
+
+#Usunicie braków danych
+na.omit(dane)
+str(dane)
+
+#Wstepne wybranie danych
+dane_model <- dane[c(-1,-2)]
+
+#Dokladne wybranie danych
+
+
+for(elem in dane_model){
+    print(cor(dane_model$`Apparent Temperature[C]`,elem,method = "pearson"))
+}
+
+M <- cor(dane_model)
+
+library(corrplot)
+
+corrplot(M,method = "number",type = "lower")
+
+
+dane_model <- dane_model[c(-1)]
+
+
+#Utworzenie zbioru testowego i treningowego
+result = sample.split(dane_model$`Apparent Temperature[C]`,0.8)
+
+train = subset(dane_model, result == TRUE)
+test  = subset(dane_model, result == FALSE)
+
+```
+
+```{r}
+#Akaike
+
+base_model <- lm(`Apparent Temperature[C]` ~ NULL,data=train) 
+
+step <- step(base_model, ~Humidity+`Wind Speed[km/h]`+`Visibility[km]`,direction = "forward")
+step
+
+
+```
+
+
+```{r}
+#Utworzenie modelu
+
+model <- lm(formula = `Apparent Temperature[C]` ~ Humidity + `Wind Speed[km/h]` + `Visibility[km]`, data = train)
+
+
+library(Metrics)
+RMSE_train <- rmse(train$`Apparent Temperature[C]`,predict(model)) 
+RMSE_train
+
+RMSE_test <- rmse(test$`Apparent Temperature[C]`,predict(model,test)) 
+RMSE_test
+
+
+```
+
+```{r}
+#Wykresy
+
+library(scatterplot3d)
+
+scatterplot3d( x = train$`Wind Speed[km/h]`, y = train$`Visibility[km]`, z = train$`Apparent Temperature[C]` )
+
+scatterplot3d( x = train$`Humidity`, y = train$`Visibility[km]`, z = train$`Apparent Temperature[C]` )
+
+scatterplot3d( x = train$`Humidity`, y = train$`Wind Speed[km/h]`, z = train$`Apparent Temperature[C]` )
+
+
+
+```
+
+
+
+
+
+
+
+
+
+

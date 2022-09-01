@@ -1,0 +1,108 @@
+
+
+### Załadowanie bibliotek
+```{r}
+library(MASS)
+library(DescTools)
+library(ggplot2)
+library(mosaic)
+```
+
+```{r}
+my_data <- survey
+my_data <- na.omit(my_data)
+
+age_mean <- mean(my_data$Age)
+age_sd <- sd(my_data$Age)
+age_mean 
+age_sd
+
+```
+
+```{r}
+confint(lm(Age ~ 1, data = my_data), level = 0.95)
+
+```
+
+```{r}
+margin <- qt(0.975, df = nrow(my_data)-1)*7/sqrt(nrow(my_data))
+margin
+
+print(c(age_mean - margin, age_mean + margin))
+```
+
+
+```{r}
+t.test(my_data$Age)$"conf.int"[1:2]
+
+```
+
+```{r}
+means1 <- c()
+for (i in 0:999) {
+means1 <- c(means1, mean(rnorm(5, mean = 10, sd = sqrt(3))))
+}
+
+ggplot() +
+aes(means1) +
+geom_histogram(fill = "lightgreen", color = "black")
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+means2 <- c()
+for (i in 0:999) {
+means2 <- c(means2, mean(rnorm(100, mean = 10, sd = sqrt(3))))
+}
+ggplot() +
+aes(means2) +
+geom_histogram(fill = "lightgreen", color = "black")
+sd(means2)
+```
+
+```{r}
+
+my_data2 <- read.delim("szczury.txt", header = FALSE)
+samples <- list()
+for (i in 1:1000) {
+samples[[i]] <- sample(my_data2, nrow(my_data2), replace = TRUE)$V1
+}
+
+means_est <- c()
+for (i in 1:1000) {
+means_est <- c(means_est, mean(samples[[i]]))
+}
+print(mean(means_est))
+
+
+
+```
+
+```{r}
+
+ggplot() +
+aes(means_est) +
+geom_histogram(fill = "lightgreen", color = "black", bins = 16) +
+labs(title = "Histogram of result", x = "Result", y = "Frequency")
+
+```
+
+
+
+

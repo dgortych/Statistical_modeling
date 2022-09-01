@@ -1,0 +1,64 @@
+---
+title: "Cw1"
+output: html_document
+---
+
+### Załadowanie bibliotek
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(gapminder)
+
+```
+
+## Cw1
+```{r}
+v1 = c(1,2,3)
+v2 = c(4,5,6)
+
+sum(v1+v2)
+```
+
+
+## Cw2
+```{r}
+hotdogs <- read.delim("D:/Studia Materiały/Studia_4_semestr/Modelowanie_statystyczne/Cw1/hotdogs.txt", header=FALSE,
+sep="\t")
+
+summary(hotdogs) 
+
+```
+
+
+## Cw3
+```{r}
+
+weather <- readRDS("D:/Studia Materiały/Studia_4_semestr/Modelowanie_statystyczne/Cw1/weather.rds")
+class(weather)
+dim(weather)
+colnames(weather)
+
+```
+
+## Cw4
+```{r}
+
+mag <- read.delim("D:/Studia Materiały/Studia_4_semestr/Modelowanie_statystyczne/Cw1/mg.txt",header=TRUE ,sep="\t",dec=',')
+mag
+
+ggplot(data=mag,aes(x,dT),x="x[m]",y="dT[nT]") + geom_point(color='orange',shape = 15)+labs(title="Anomalia Magnetyczna",x="x[m]",y="dT[nT]")
+
+
+
+```
+## Cw4
+
+```{r}
+gap
+filter(gapminder,)
+
+
+
+
+```
+

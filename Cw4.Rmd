@@ -1,0 +1,85 @@
+---
+title: "Cw4"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(mosaic)
+
+```
+
+
+```{r}
+data <- diamonds
+str(data)
+
+mean(data$price)
+median(data$price)
+
+ggplot(data=data,aes(x = price)) + geom_histogram()
+
+```
+
+```{r}
+data %>% 
+  filter(price > 10000) %>%
+    summarise(count = n())
+
+```
+
+```{r}
+mosaic::mean(price ~ clarity, data = data)
+
+```
+
+
+```{r}
+
+ggplot(data,aes(y=price/carat,x = color)) + geom_boxplot()
+
+```
+
+```{r}
+
+ggplot(data,aes(y=price,x = clarity)) + geom_boxplot()
+
+```
+
+```{r}
+
+ggplot(data,aes(y=price,x = carat)) + geom_point()
+
+```
+
+```{r}
+n_data <- mutate(data,carat_log = log10(carat),price_log = log10(price))
+model <- lm(price_log ~ carat_log,data=n_data)
+plot(model)
+
+```
+
+```{r}
+model2 <- lm(price_log ~ color + cut ,data=n_data)
+plot(model2)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

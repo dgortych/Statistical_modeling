@@ -1,0 +1,163 @@
+---
+title: "Cw3"
+output: html_document
+---
+
+```{r}
+library(csrplus)
+library(ggplot2)
+```
+
+```{r}
+my_data <- quakes
+ggplot(data=my_data,aes(x=long,y=lat))+geom_point()+labs(title="Quake locations",x="Lab",y="Lat")
+
+```
+
+```{r}
+ggplot(data=my_data,aes(x=mag,y=stations))+geom_point()+labs(title="Station amount dependency on Magnitude",x="Magnitude",y="Stat_amount")
+
+```
+
+
+```{r}
+my_data$mag <- jitter(my_data$mag,factor=0.5) 
+
+ggplot(data=my_data,aes(x=mag,y=stations))+geom_point(shape = 20,color=rgb(0.1,0.2,0.8),alpha=0.3)+labs(title="Station amount dependency on Magnitude with Noise",x="Magnitude",y="Stat_amount") 
+
+```
+
+
+```{r}
+Quake.mod <- lm(data=my_data,stations ~ mag)
+Quake.mod$coefficients
+
+```
+
+
+```{r}
+
+my_data$mag <- jitter(my_data$mag,factor=0.5) 
+
+ggplot(data=my_data,aes(x=mag,y=stations))+geom_point(shape = 20,color=rgb(0.1,0.2,0.8),alpha=0.3)+labs(title="Station amount dependency on Magnitude with abline",x="Magnitude",y="Stat_amount") + geom_smooth(method='lm', formula= y~x)
+
+
+```
+
+
+
+```{r}
+QuakeResiduals <- Quake.mod$residuals
+QuakeFittedValues <-Quake.mod$fitted.values
+
+res_data <- data.frame(QuakeResiduals,QuakeFittedValues)
+
+ggplot(data=res_data,aes(x=QuakeFittedValues,y=QuakeResiduals))+geom_point(shape = 20,color=rgb(0.1,0.2,0.8),alpha=0.3)+labs(title="Residual plot",x="Magnitude",y="Residual") + geom_abline(aes(intercept=0,slope=0),color="red")
+
+
+```
+
+
+```{r}
+ggplot(data=res_data,aes(x=QuakeResiduals))+geom_histogram()+labs(title="Residual histogram",x="Residual",y="Count")+theme_bw()
+
+```
+
+
+```{r}
+conf_interval <- confint(Quake.mod,level = 0.95)
+conf_interval
+
+ggplot(data=my_data,aes(x=mag,y=stations))+geom_point(shape = 20,color=rgb(0.1,0.2,0.8),alpha=0.3)+labs(title="Station amount dependency on Magnitude with Confidence Intervals",x="Magnitude",y="Stat_amount")+geom_abline(aes(intercept=-188.64628,slope=44.50944),color="red")+geom_abline(aes(intercept=-172.20238,slope=48.054980),color="red")+geom_smooth(method='lm', formula= y~x)
+
+```
+
+
+
+```{r}
+
+deviance(Quake.mod) # Resztkowa suma kwadratów odchylen
+
+sqrt(deviance(Quake.mod)/df.residual(Quake.mod)) #odchylenie standardowe skladnika resztkowego
+
+deviance(Quake.mod)/sum(anova(Quake.mod)[,2]) #wspolczynnik zbieznosci
+
+1 - deviance(Quake.mod)/sum(anova(Quake.mod)[,2]) # wspolczynnik determinacji
+
+```
+
+```{r}
+summary(Quake.mod)
+
+```
+
+```{r}
+
+library(psych)
+
+v1 <- c("od 5 do 15","od 15 do 25","od 25 do 35","od 35 do 45","od 45 do 55")
+v2 <- c(9,10,11,12,8)
+dane <- data.frame(v1,v2)
+dane
+
+summary(v2)
+sd(v2)
+describe(v2)
+
+
+```
+```{r}
+
+
+v3 <- rep(1:1, each=100)
+
+model <- lm(data=v3,~v3)
+conf_interval <- confint(v3,level = 0.95)
+conf_interval
+
+
+
+
+```
+```{r}
+
+library(caTools)
+library(GGally)
+library(Metrics)
+
+c0 <- c("niskie","srednie","wysokie")
+c1 <- c(70,50,10)
+c2 <- c(30,50,70)
+
+data2 <- data.frame(c0,c1,c2)
+colnames(data2) <- c(",","ponizej10","10 i weicej")
+
+
+M <- cor(data2$ponizej10,data2$`10 i weicej`)
+M
+
+model <- lm(data=data2,data2$ponizej10~data2$`10 i weicej`)
+model
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

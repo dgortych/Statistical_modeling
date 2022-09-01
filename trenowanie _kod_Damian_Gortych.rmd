@@ -1,0 +1,170 @@
+
+#Trenowanie1
+
+```{r}
+
+library(caTools)
+library(GGally)
+library(Metrics)
+
+
+data <- read.csv2("D:/Studia Materiały/Studia_4_semestr/Modelowanie_statystyczne/Cw8/weather.csv",header = TRUE, sep=";", stringsAsFactors = FALSE,na.strings=c("","NA"))
+
+str(data)
+
+data <- data[-c(1,2,3,4,8)]
+
+data <- data[complete.cases(data), ]
+
+dim(data)
+
+
+```
+
+```{r}
+
+result=sample.split(data$LAT,0.8)
+
+train = subset(data, result == TRUE)
+test  = subset(data, result == FALSE)
+
+rain_train <- train$MEAN.ANNUAL.RAINFALL
+rain_test <- test$MEAN.ANNUAL.RAINFALL
+
+#ggpairs(train)
+
+for(elem in data){
+    print(cor(data$MEAN.ANNUAL.RAINFALL,elem,method = "pearson"))
+}
+
+cor_over_value <- data[c(3,5,6,7,13,15)]
+
+M <- cor(train)
+
+library(corrplot)
+
+corrplot(M,method = "number",type = "lower")
+
+
+ggpairs(cor_over_value)
+
+
+```
+
+#Trenowanie2
+
+```{r}
+
+#zad1
+
+model <- lm(MEAN.ANNUAL.RAINFALL ~ 1, data = train)
+
+mean <- mean(data$MEAN.ANNUAL.RAINFALL)
+
+mean
+summary(model)
+ 
+#zad2
+
+pred <- predict(model)
+
+rmse(train$MEAN.ANNUAL.RAINFALL,pred)
+
+#zad3
+
+RMSE1_train <- rmse(train$MEAN.ANNUAL.RAINFALL,predict(model,test))
+
+RMSE1_test <- rmse(train$MEAN.ANNUAL.RAINFALL,predict(model,train))
+
+
+#zad4
+plot(train$MEAN.ANNUAL.RAINFALL)
+abline(model)
+
+
+plot(test$MEAN.ANNUAL.RAINFALL)
+abline(model)
+
+
+```
+
+
+
+```{r}
+
+#zad5
+model3 <- lm(MEAN.ANNUAL.RAINFALL ~ ALTITUDE,data = train)
+
+rmse(train$ALTITUDE,predict(model3))
+
+#zad6
+RMSE2_train <- rmse(train$MEAN.ANNUAL.RAINFALL,predict(model3,test))
+
+#zad7
+plot(test$ALTITUDE,test$MEAN.ANNUAL.RAINFALL)
+abline(model3)
+
+plot(train$ALTITUDE,train$MEAN.ANNUAL.RAINFALL)
+abline(model3)
+
+
+```
+
+```{r}
+
+#zad8
+model4 <- lm(MEAN.ANNUAL.RAINFALL ~ MAX.RAINFALL,data = train)
+
+RMSE3_train <-rmse(train$MAX.RAINFALL,predict(model4))
+
+#zad9
+RMSE2_test <- rmse(test$MEAN.ANNUAL.RAINFALL,predict(model4,test))
+
+#zad10
+plot(test$MAX.RAINFALL,test$MEAN.ANNUAL.RAINFALL)
+abline(model4,col = "red")
+
+plot(train$MAX.RAINFALL,train$MEAN.ANNUAL.RAINFALL)
+abline(model4,col = "red")
+
+
+
+```
+
+
+```{r}
+
+#zad11
+model5 <- lm(MEAN.ANNUAL.RAINFALL ~ MAX.RAINFALL + ALTITUDE,data = data)
+summary(model5)  # R^2 = 0.7484
+
+RMSE3_test <- rmse(train$MEAN.ANNUAL.RAINFALL,predict(model5))
+
+#zad12
+
+RMSE4_train <- rmse(train$MEAN.ANNUAL.RAINFALL,predict(model5,train))
+
+#zad13
+
+library(scatterplot3d)
+
+scatterplot3d( x = train$ALTITUDE, y = train$MAX.RAINFALL, z = train$MEAN.ANNUAL.RAINFALL )
+
+
+scatterplot3d( x = test$ALTITUDE, y = test$MAX.RAINFALL, z = test$MEAN.ANNUAL.RAINFALL )
+
+
+#zad14
+
+RMSE_vec <- c(RMSE1_train,RMSE2_train,RMSE3_train,RMSE4_train,RMSE1_test,RMSE2_test,RMSE3_test)
+plot(RMSE_vec)
+
+
+```
+
+
+
+
+
+
+
